@@ -1,17 +1,24 @@
-import { FormControl, Box, Button, IconButton, Typography, InputAdornment, TextField, useTheme } from "@mui/material";
+import { Box, Button, IconButton, Typography, InputAdornment, TextField, useTheme, CircularProgress } from "@mui/material";
 import { tokens } from "../../theme";
 import { useState } from "react";
 import Header from "../../components/Header";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../../redux/authslice';
+import SnackbarMsg, { Severity, AnchorOrigin } from '../../components/SnackbarMsg';
 
 const Login = () => {
 
+    const dispatch = useDispatch();
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    const { loading, error, msg } = useSelector((state) => state.auth);
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -32,7 +39,7 @@ const Login = () => {
         }
 
         if (!emailError && !passwordError) {
-            console.log("Form submitted");
+            dispatch(login({ email, password }));
         }
     };
 
@@ -46,7 +53,6 @@ const Login = () => {
     const togglePasswordVisibility = () => {
         setShowPassword((prev) => !prev);
     };
-
 
     return (
         <Box m="20px"
@@ -119,10 +125,21 @@ const Login = () => {
 
 
                         <Button type="submit" variant="contained" color="secondary" sx={{ width: '7vw', height: '50px' }}>
-                            <Typography variant="h6" color='white' >
-                                Login
-                            </Typography>
+                            {loading ? (
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                                    <CircularProgress size={24} sx={{ color: 'white' }} />
+                                </Box>
+                            ) : (
+                                <Typography variant="h6" color="white">
+                                    Login
+                                </Typography>
+                            )}
+
                         </Button>
+
+                        {error && <SnackbarMsg text={error} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT}/>}
+                        {msg && <SnackbarMsg text={msg} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT}/>}
+
                     </Box>
                 </form>
             </Box>
