@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Sidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
+
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -20,17 +21,20 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
-    <MenuItem
-      active={selected === title}
-      style={{
-        color: colors.grey[100],
-      }}
-      onClick={() => setSelected(title)}
-      icon={icon}
-    >
-      <Typography>{title}</Typography>
-      <Link to={to} />
-    </MenuItem>
+    <Link to={to} style={{ textDecoration: 'none' }}>
+      <MenuItem
+        to={to}
+        active={selected === title}
+        style={{
+          color: colors.grey[100],
+        }}
+        onClick={() => setSelected(title)}
+        icon={icon}
+      >
+        <Typography>{title}</Typography>
+        <Link to={to} />
+      </MenuItem>
+    </Link>
   );
 };
 
@@ -48,31 +52,35 @@ const SidebarComponent = () => {
       onCollapse={() => setIsCollapsed(!isCollapsed)}
     >
       <Box
+        component="div"
+
         sx={{
           "& .pro-sidebar-inner": {
             background: `${colors.primary[400]} !important`,
           },
           "& .pro-icon-wrapper": {
-            backgroundColor: "transparent !important",
           },
           "& .pro-inner-item": {
-            padding: "5px 35px 5px 20px !important",
+            padding: "10px 35px 5px 20px !important",
           },
           "& .pro-inner-item:hover": {
-            color: "#868dfb !important",
+            color: "#000 !important",
           },
           "& .pro-menu-item.active": {
             color: "#6870fa !important",
           },
         }}
       >
-        <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
+        <Menu iconShape="square"
+          style={{
+            backgroundColor: colors.primary[400],
+          }}
+        >
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
-              margin: "10px 0 20px 0",
+              padding: "20px 0 10px 0",
               color: colors.grey[100],
             }}
           >
@@ -141,8 +149,8 @@ const SidebarComponent = () => {
               Data
             </Typography>
             <Item
-              title="Manage Team"
-              to="/team"
+              title="Users"
+              to="/users"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

@@ -43,9 +43,36 @@ class ApiService {
     this.api.defaults.headers['Authorization'] = `Bearer ${token}`;
   }
 
+  getToken() {
+    const token = localStorage.getItem('token');
+    return token ?   token: null; 
+  }
+
+
   clearToken() {
     localStorage.removeItem('token');
     delete this.api.defaults.headers['Authorization'];
+  }
+
+  createApiWithoutBaseUrl() {
+    const apiWithoutBaseUrl = axios.create({
+      timeout: 10000,
+    });
+
+    apiWithoutBaseUrl.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    return apiWithoutBaseUrl;
   }
 }
 

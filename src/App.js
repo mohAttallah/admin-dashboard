@@ -3,12 +3,12 @@ import { Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import { Provider, useSelector, useDispatch } from "react-redux";
-import store from "./redux/store";
-import { ProSidebarProvider } from 'react-pro-sidebar'; 
+
+import { ProSidebarProvider } from 'react-pro-sidebar';
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
-import Team from "./scenes/team";
+import Users from "./scenes/users";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
 import Bar from "./scenes/bar";
@@ -24,19 +24,26 @@ function App() {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.auth);
   const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
+  const [isSidebar, setIsSidebar] = useState(false);
 
   useEffect(() => {
     dispatch({ type: 'auth/checkToken' });
+    if (isAuth) {
+      setIsSidebar(true)
+    }
   }, []);
 
   return (
-    <Provider store={store}>
+
+    <ColorModeContext.Provider value={colorMode}>
       <ProSidebarProvider>
-      <ColorModeContext.Provider value={colorMode}>
+
         <ThemeProvider theme={theme}>
+
           <CssBaseline />
+
           <div className="app">
+
             {!isAuth ? (
               <Routes>
                 <Route path="/" element={<Login />} />
@@ -44,11 +51,13 @@ function App() {
             ) : (
               <>
                 <Sidebar isSidebar={isSidebar} />
+
                 <main className="content">
+
                   <Topbar setIsSidebar={setIsSidebar} />
                   <Routes>
                     <Route path="/" element={<Dashboard />} />
-                    <Route path="/team" element={<Team />} />
+                    <Route path="/users" element={<Users />} />
                     <Route path="/contacts" element={<Contacts />} />
                     <Route path="/invoices" element={<Invoices />} />
                     <Route path="/form" element={<Form />} />
@@ -64,9 +73,9 @@ function App() {
             )}
           </div>
         </ThemeProvider>
-      </ColorModeContext.Provider>
       </ProSidebarProvider>
-    </Provider>
+    </ColorModeContext.Provider>
+
   );
 }
 
