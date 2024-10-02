@@ -71,7 +71,7 @@ class ApiService {
         return Promise.reject(error);
       }
     );
-
+    
     return apiWithoutBaseUrl;
   }
 }

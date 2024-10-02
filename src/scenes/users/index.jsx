@@ -1,43 +1,97 @@
-import React, { useState } from "react";
-import { Box, Typography, useTheme, IconButton, Menu, MenuItem } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Typography, useTheme, IconButton, Menu, MenuItem, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import PersonIcon from '@mui/icons-material/Person';
-import MoreVertIcon from '@mui/icons-material/MoreVert';  // Import the 3-dot icon
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import PersonIcon from "@mui/icons-material/Person";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useSelector, useDispatch } from 'react-redux';
 import Header from "../../components/Header";
-import { getUsers, getNextData } from '../../redux/userslice';
-import { useEffect } from "react";
+import { getUsers, getNextData, usersSearch } from '../../redux/userslice';
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
+import AssignWalletModal from  "../../components/users/AssignWallet";
+import AssignTeacherModal from  "../../components/users/AssignTeacher";
 
 const Users = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const dispatch = useDispatch();
-  const { loading, error, data, previousUrl, nextUrl, totalRecords } = useSelector((state) => state.users);
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 25,
-    page: 0,
-  });
+  const { loading, data, totalRecords, walletSuccessfully } = useSelector((state) => state.users);
+  const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0 });
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [searchValue, setSearchValue] = useState(null);
+  const [openAssignToWallet,  setOpenAssignToWallet] = useState(false); 
+  const [openAssignTeacher,  setOpenAssignTeacher] = useState(false); 
 
-  const [anchorEl, setAnchorEl] = useState(null); // State for menu
-  const [selectedUser, setSelectedUser] = useState(null); // State to track the selected user
+
+  const handlePaginations = (model) => {
+    setSearchValue(null);
+    const offset = model.page * model.pageSize;
+    dispatch(getNextData({ limit: model.pageSize, offset }));
+    setPaginationModel(model);
+  };
 
   const handleMenuClick = (event, user) => {
+    setSelectedUser(null);
     setAnchorEl(event.currentTarget);
-    setSelectedUser(user); // Store the user related to this menu
+    setSelectedUser(user);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedUser(null);
   };
 
+  const handleSearch = (event) => {
+    const keyword = event.target.value;
+    if (keyword) {
+      setSearchValue(keyword);
+      dispatch(usersSearch(keyword));
+      setPaginationModel({
+        ...paginationModel,
+        page: 0,
+      });
+    }
+  };
+  
   useEffect(() => {
     document.title = "Users | Admin Panel";
     dispatch(getUsers());
-  }, []);
+    window.scrollTo(0, 0);
+    console.log("data", data.length);
+    setPaginationModel({
+      pageSize: data.length || 10,
+      page: 0,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    if(walletSuccessfully===true){
+      dispatch(getUsers());
+      setPaginationModel({
+        pageSize: data.length,
+        page: 0,
+      });
+    }
+  }, [walletSuccessfully]);
+
+  const handleAssignWalletOpen = () => {
+    setOpenAssignToWallet(true); 
+    handleMenuClose(); 
+  };
+  const handleAssignWalletClose = () => {
+    setOpenAssignToWallet(false); 
+  };
+
+  const handleAssignTeacherOpen = () => {
+    setOpenAssignTeacher(true); 
+    handleMenuClose(); 
+  }
+  const handleAssignTeacherClose = () => {
+    setOpenAssignTeacher(false);
+  }
 
   const columns = [
     { field: "id", headerName: "ID" },
@@ -60,6 +114,13 @@ const Users = () => {
       align: "left",
     },
     {
+      field: "isDeleted",
+      headerName: "is Deleted",
+      type: "boolean",
+      headerAlign: "left",
+      align: "left",
+    },
+    {
       field: "wallet",
       headerName: "Wallet",
       flex: 1,
@@ -71,8 +132,8 @@ const Users = () => {
       field: "accessLevel",
       headerName: "Access Level",
       flex: 1,
-      renderCell: (params) => {
-        const { isAdmin, isTeacher } = params.row;
+      renderCell: ({ row }) => {
+        const { isAdmin, isTeacher } = row;
         return (
           <Box
             width="70%"
@@ -108,13 +169,9 @@ const Users = () => {
           <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
             <MoreVertIcon />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={handleMenuClose}>View Details</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+            <MenuItem onClick={handleAssignTeacherOpen}>Make it a Teacher</MenuItem>
+            <MenuItem onClick={handleAssignWalletOpen}>Assign wallet</MenuItem> 
             <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
           </Menu>
         </>
@@ -123,10 +180,20 @@ const Users = () => {
   ];
 
   return (
-    <Box m="20px">
+    <Box m="15px">
       <Header title="Users" subtitle="Managing the Users Members" />
+      <AssignWalletModal selectedUser={selectedUser} open={openAssignToWallet} handleClose={handleAssignWalletClose} /> 
+      <AssignTeacherModal selectedUser={selectedUser} open={openAssignTeacher } handleClose={handleAssignTeacherClose} />
+      
+      <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="3px" sx={{ width: '20%' }}>
+        <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Search" value={searchValue} onChange={handleSearch} />
+        <IconButton type="button">
+          <SearchIcon />
+        </IconButton>
+      </Box>
+
       <Box
-        m="40px 0 0 0"
+        m="10px 0 0 0"
         height="75vh"
         sx={{
           "& .MuiDataGrid-root": { border: "none" },
@@ -142,15 +209,16 @@ const Users = () => {
           checkboxSelection
           rows={data || []}
           columns={columns}
-          pageSize={data.length}
+          pageSize={10}
           rowCount={totalRecords}
           getRowId={(row) => row._id}
           paginationMode="server"
           loading={loading}
           pagination
-          pageSizeOptions={[5, 10, 25]}
           paginationModel={paginationModel}
-          onPaginationModelChange={() => nextUrl && dispatch(getNextData())}
+          onPaginationModelChange={(model) => {
+            handlePaginations(model);
+          }}
         />
       </Box>
     </Box>
