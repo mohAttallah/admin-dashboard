@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import ApiService from './ApiService';
-import { daDK } from '@mui/material/locale';
+
 const apiService = new ApiService();
 const apiWithoutBaseUrl = apiService.createApiWithoutBaseUrl();
 
@@ -16,6 +15,9 @@ const initialState = {
     walletLoading: null,
     walletError: null,
     walletSuccessfully : null,
+    assignTeacherLoading: null,
+    assignTeacherError: null,
+    assignTeacherSuccessfully : null
 };
 
 
@@ -49,7 +51,7 @@ export const getNextData = createAsyncThunk(
     'admin/users/next-data',
     async ({ limit, offset }, { rejectWithValue }) => {
         try {
-            const response = await apiWithoutBaseUrl.get(`https://4gpa.dev2.prodevr.com/admin/users?limit=${limit}&offset=${offset}`);
+            const response = await apiService.get(`/admin/users?limit=${limit}&offset=${offset}`);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data || { message: error.message });
@@ -74,8 +76,20 @@ export const assignToWallet = createAsyncThunk(
 );
 
 
+export const assignTeacher= createAsyncThunk(
+    '/teachers/assign',
+    async (data, { rejectWithValue }) => {
+        try {
 
+            const response = await apiService.post('/teachers/assign', data);
 
+            return response.data;
+
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
 
 
 const updateFulfilledState = (state, action) => {
@@ -93,7 +107,6 @@ const usersSlice = createSlice({
     reducers: {
 
     },
-
     extraReducers: (builder) => {
         builder
             .addCase(getUsers.pending, (state) => {
@@ -145,7 +158,21 @@ const usersSlice = createSlice({
                 state.walletLoading = false;
                 state.walletError = action.payload.message;
                 state.walletSuccessfully = false;
-
+            })  
+            .addCase(assignTeacher.pending, (state) => {
+                state.assignTeacherLoading = true;
+                state.assignTeacherError = null;
+                state.assignTeacherSuccessfully = false;
+            })
+            .addCase(assignTeacher.fulfilled, (state, action) => {
+                state.assignTeacherLoading = false;
+                state.assignTeacherError = null;
+                state.assignTeacherSuccessfully = true;
+            })
+            .addCase(assignTeacher.rejected, (state, action) => {
+                state.assignTeacherLoading = false;
+                state.assignTeacherError = action.payload.message;
+                state.assignTeacherSuccessfully = false;
             });
 
         },

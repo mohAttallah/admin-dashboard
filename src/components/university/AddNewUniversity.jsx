@@ -11,7 +11,8 @@ import SelectComponent from "../Select";
 import { useEffect, useState } from 'react';
 import { universityList } from "../../redux/universityslice";
 
-export default function AssignTeacher({ selectedUser, open, handleClose }) {
+export default function AddNewUnivesity ({ selectedUser, open, handleClose }) {
+
   const dispatch = useDispatch();
   const { assignTeacherSuccessfully, assignTeacherError} = useSelector((state) => state.users);
   const { universityListData } = useSelector((state) => state.university);
@@ -23,8 +24,8 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
     dispatch(universityList());
   }, []);
 
+
   const handleSubmit = (event) => {
-    event.preventDefault();
     event.preventDefault();
     if (!selectedUniversity || !specializationhInput) {
       setErrorMsg("All fields are required.");
@@ -52,10 +53,10 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
 
   return (
     <div>
-
+{/*       
       {assignTeacherError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
       {assignTeacherSuccessfully && <SnackbarMsg text={"Assigned to Wallet Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
-      
+       */}
       <Modal
         aria-labelledby="unstyled-modal-title"
         aria-describedby="unstyled-modal-description"
@@ -65,9 +66,9 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
       >
         <ModalContent sx={{ width: 500 }}>
 
-          <h2 id="unstyled-modal-title" className="modal-title">
+          {/* <h2 id="unstyled-modal-title" className="modal-title">
             Convert {selectedUser?.name} to be a Teacher
-          </h2>
+          </h2> */}
 
           <form onSubmit={handleSubmit}>
             <Box>
@@ -119,7 +120,7 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
   );
 }
 
-AssignTeacher.propTypes = {
+AddNewUnivesity.propTypes = {
   selectedUser: PropTypes.object,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,

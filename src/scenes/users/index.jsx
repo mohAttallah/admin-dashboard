@@ -15,10 +15,11 @@ import AssignWalletModal from  "../../components/users/AssignWallet";
 import AssignTeacherModal from  "../../components/users/AssignTeacher";
 
 const Users = () => {
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const dispatch = useDispatch();
-  const { loading, data, totalRecords, walletSuccessfully } = useSelector((state) => state.users);
+  const { loading, data, totalRecords, walletSuccessfully, assignTeacherSuccessfully } = useSelector((state) => state.users);
   const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0 });
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -60,7 +61,6 @@ const Users = () => {
     document.title = "Users | Admin Panel";
     dispatch(getUsers());
     window.scrollTo(0, 0);
-    console.log("data", data.length);
     setPaginationModel({
       pageSize: data.length || 10,
       page: 0,
@@ -68,14 +68,14 @@ const Users = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if(walletSuccessfully===true){
+    if(walletSuccessfully===true || assignTeacherSuccessfully===true){
       dispatch(getUsers());
       setPaginationModel({
         pageSize: data.length,
         page: 0,
       });
     }
-  }, [walletSuccessfully]);
+  }, [walletSuccessfully, assignTeacherSuccessfully]);
 
   const handleAssignWalletOpen = () => {
     setOpenAssignToWallet(true); 
@@ -205,6 +205,7 @@ const Users = () => {
           "& .MuiCheckbox-root": { color: `${colors.greenAccent[200]} !important` },
         }}
       >
+
         <DataGrid
           checkboxSelection
           rows={data || []}
@@ -220,6 +221,7 @@ const Users = () => {
             handlePaginations(model);
           }}
         />
+
       </Box>
     </Box>
   );

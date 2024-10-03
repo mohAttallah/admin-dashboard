@@ -1,4 +1,3 @@
-// src/api/ApiService.js
 import axios from 'axios';
 
 class ApiService {
