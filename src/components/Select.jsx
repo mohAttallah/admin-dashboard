@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const SelectComponent = ({ label, value, onChange, options }) => {
+const SelectComponent = ({ label, value, onChange, options, width = 'fullWidth' }) => {
     return (
-        <FormControl fullWidth>
+        <FormControl sx={{ width: width === 'fullWidth' ? '100%' : width }}>
             <InputLabel id={`${label}-select-label`} sx={{ color: "#fff" }}>
                 {label}
             </InputLabel>

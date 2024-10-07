@@ -7,20 +7,32 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Box, InputBase, InputLabel } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { addNewUniversity } from "../../redux/universityslice";
+import { editUniversity } from "../../redux/universityslice";
 import SnackbarMsg, { Severity, AnchorOrigin } from '../SnackbarMsg';
 
-export default function AddNewUniversity({ selectedUser, open, handleClose }) {
-  const dispatch = useDispatch();
-  const [errorMsg, setErrorMsg] = useState(null);
-  const [name, setName] = useState(null);
-  const [nameInArabic, setNameInArabic] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [country, setCountry] = useState(null);
-  const [photo, setPhoto] = useState(null);
-  const [photoError, setPhotoError] = useState('');
-  const { addNewUniversitySuccessfully, addNewUniversityError } = useSelector((state) => state.university);
+export default function EditUniversity ({ selectedUniversity, open, handleClose }) {
 
+    const dispatch = useDispatch();
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [universityId,  setUniversityId]=  useState(null)
+  const [name, setName] = useState(null);
+  const [nameInArabic, setNameInArabic] = useState(null );
+  const [address, setAddress] = useState(   null );
+  const [country, setCountry] = useState(  null );
+  const [photo, setPhoto] = useState(  null);
+  const [photoError, setPhotoError] = useState('');
+  const { editUniversitySuccessfully, editUniversityError } = useSelector((state) => state.university );
+
+
+
+  useEffect(()=>{
+    setUniversityId(selectedUniversity?._id)
+    setName(selectedUniversity?.name );
+    setNameInArabic(selectedUniversity?.nameInArabic);
+    setAddress(selectedUniversity?.address);
+    setCountry(selectedUniversity?.country )
+    setPhoto(selectedUniversity?.photo)
+  },[selectedUniversity])
 
 
   const handlePhotoChange = (event) => {
@@ -46,21 +58,23 @@ export default function AddNewUniversity({ selectedUser, open, handleClose }) {
       return
     }
 
-    dispatch(addNewUniversity({name,  nameInArabic, address , country, photo }));
+    dispatch(editUniversity({name,  nameInArabic, address , country, photo , universityId }));
 
-    // setName(null)
-    // setAddress(null)
-    // setNameInArabic(null)
-    // setPhoto(null)
-    // setCountry(null)
+    setName(null)
+    setAddress(null)
+    setNameInArabic(null)
+    setPhoto(null)
+    setCountry(null)
+
+    handleClose()
   };
 
 
 
   return (
     <div>
-      {addNewUniversityError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
-      {addNewUniversitySuccessfully && <SnackbarMsg text={"Create University Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
+      {editUniversityError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
+      {editUniversitySuccessfully && <SnackbarMsg text={"Edit University Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
 
       <Modal
         aria-labelledby="unstyled-modal-title"
@@ -72,7 +86,7 @@ export default function AddNewUniversity({ selectedUser, open, handleClose }) {
 
 
         <ModalContent sx={{ width: 500 }}>
-
+        <h2 id="unstyled-modal-title">Edit University</h2>
           <form onSubmit={handleSubmit}>
 
             <Box mt={1} mb={1}>
@@ -152,7 +166,6 @@ export default function AddNewUniversity({ selectedUser, open, handleClose }) {
             <Box mt={1} mb={1} display="flex" justifyContent="center">
               {photo && <img src={photo} alt="Uploaded" style={{ marginTop: '20px', maxWidth: '35%', height: '40%' }} />}
             </Box>
-            
             <Button type="submit" variant="contained" sx={{ backgroundColor: '#0093e6' }}>
               Submit
             </Button>
@@ -173,7 +186,7 @@ export default function AddNewUniversity({ selectedUser, open, handleClose }) {
   );
 }
 
-AddNewUniversity.propTypes = {
+EditUniversity.propTypes = {
   selectedUser: PropTypes.object,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,

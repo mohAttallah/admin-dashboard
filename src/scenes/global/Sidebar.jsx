@@ -155,11 +155,37 @@ const SidebarComponent = () => {
             />
             <Item
               title="Collage"
-              to="/invoices"
+              to="/Collage"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Department"
+              to="/Department"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+<Item
+              title="Materials"
+              to="/materials"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+
+            <Item
+              title="Groups"
+              to="/Groups"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+
             <Item
               title="Profile Form"
               to="/form"
@@ -167,6 +193,8 @@ const SidebarComponent = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
+ 
             <Item
               title="Calendar"
               to="/calendar"
@@ -174,6 +202,9 @@ const SidebarComponent = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
+
+
             <Item
               title="FAQ Page"
               to="/faq"

@@ -11,6 +11,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import AddNewUnivesity from "../../components/university/AddNewUniversity"
+import EditUniversity from "../../components/university/EditUniversity";
+import  DeleteUniversity  from  "../../components/university/DeleteUniversity";
 
 const University = () => {
   const dispatch = useDispatch();
@@ -18,10 +20,12 @@ const University = () => {
   const colors = tokens(theme.palette.mode);
   const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0 });
   const [anchorEl, setAnchorEl] = useState(null);
-  const { loading, totalRecords, universityPginationsData, universityPginationsErorr } = useSelector((state) => state.university);
+  const { loading, totalRecords, universityPginationsData, universityPginationsErorr, addNewUniversitySuccessfully, editUniversitySuccessfully, deleteUniversitySuccessfully } = useSelector((state) => state.university);
   const [selectedUniversity, setSelectedUniversity] = useState(null);
   const [searchValue, setSearchValue] = useState(null);
   const [openNewUnivesity, setOpenNewUnivesity] = useState(false);
+  const [openEditUnivesity, setOpenEditUnivesity] = useState(false);
+  const [openDeleteUnivesity, setOpenDeleteUnivesity] = useState(false);
 
 
   useEffect(() => {
@@ -31,7 +35,22 @@ const University = () => {
       pageSize: universityPginationsData.length || 10,
       page: 0,
     });
+
   }, [])
+
+
+  useEffect(() => {
+    if (addNewUniversitySuccessfully === true || editUniversitySuccessfully===true || deleteUniversitySuccessfully===true) {
+      dispatch(universityListPginations())
+      setPaginationModel({
+        pageSize: universityPginationsData.length|| 10, 
+        page: 0,
+      });
+      window.location.reload();
+
+    }
+
+  }, [addNewUniversitySuccessfully,  editUniversitySuccessfully, deleteUniversitySuccessfully])
 
   const handleMenuClick = (event, university) => {
     setSelectedUniversity(null);
@@ -51,12 +70,34 @@ const University = () => {
   };
 
 
+
   const handleCloseModalNewUnivesity = () => {
     setOpenNewUnivesity(false);
   }
 
-  const handleOpenModalNewUnivesity =()=>{
+  const handleOpenModalNewUnivesity = () => {
+    setOpenNewUnivesity(true);
+  }
 
+  const handleOpenModalEditUnivesity = () => {
+    setOpenEditUnivesity(true);
+    handleMenuClose()
+  }
+
+  const handleCloseModalEditUnivesity = () => {
+    setOpenEditUnivesity(false);
+  }
+  
+
+
+  const handleCloseModalDeleteUnivesity = () => {
+    setOpenDeleteUnivesity(false);
+
+  }
+
+  const handleOpenModalDeleteUnivesity = () => {
+    setOpenDeleteUnivesity(true);
+    handleMenuClose()
   }
 
   const handleSearch = () => {
@@ -113,8 +154,8 @@ const University = () => {
             <MoreVertIcon />
           </IconButton>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-            <MenuItem >Edit</MenuItem>
-            <MenuItem >Delete</MenuItem>
+            <MenuItem onClick={()=>{handleOpenModalEditUnivesity()}} >Edit</MenuItem>
+            <MenuItem onClick={()=>handleOpenModalDeleteUnivesity()} >Delete</MenuItem>
           </Menu>
         </>
       ),
@@ -127,9 +168,11 @@ const University = () => {
         title="University"
         subtitle="Managing the Universites"
       />
-      <AddNewUnivesity selectedUser={selectedUniversity} open={openNewUnivesity} handleClose={handleCloseModalNewUnivesity}/>
-      
-      {/* <AssignWalletModal selectedUser={selectedUser} open={openAssignToWallet} handleClose={handleAssignWalletClose} />  */}
+      {/* Modal */}
+      <AddNewUnivesity  open={openNewUnivesity} handleClose={handleCloseModalNewUnivesity} />
+      <EditUniversity selectedUniversity={selectedUniversity} open={openEditUnivesity} handleClose={handleCloseModalEditUnivesity}/>
+      <DeleteUniversity selectedUniversity={selectedUniversity} open={openDeleteUnivesity} handleClose={handleCloseModalDeleteUnivesity}/>
+      {/* open, handleClose, universityId */}
 
       <Box display="flex" flexDirection="row" gap={2} sx={{ width: '100%' }}>
         <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="3px">
@@ -142,7 +185,7 @@ const University = () => {
         <Button
           variant="contained"
           sx={{ backgroundColor: '#0093e6', color: '#fff' }}
-          onClick={() => handleOpenModalNewUnivesity}
+          onClick={() => handleOpenModalNewUnivesity()}
         >
           Add New University
         </Button>

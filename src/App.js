@@ -9,7 +9,7 @@ import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Users from "./scenes/users";
-import Invoices from "./scenes/invoices";
+import Collage from "./scenes/collage";
 import University from "./scenes/university";
 import Bar from "./scenes/bar";
 import Form from "./scenes/form";
@@ -19,6 +19,9 @@ import FAQ from "./scenes/faq";
 import Geography from "./scenes/geography";
 import Calendar from "./scenes/calendar/calendar";
 import Login from './scenes/login';
+import Department from "./scenes/department";
+import  Materials from "./scenes/materials";
+import  Groups  from "./scenes/groups";
 
 function App() {
   const dispatch = useDispatch();
@@ -59,7 +62,13 @@ function App() {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="/university" element={<University />} />
-                    <Route path="/invoices" element={<Invoices />} />
+                    <Route path="/Collage" element={<Collage />} />
+                    <Route path="/Department" element={<Department />} />
+                    <Route path="/Materials" element={<Materials />} />
+                    <Route path="/Groups" element={<Groups />} />
+
+
+
                     <Route path="/form" element={<Form />} />
                     <Route path="/bar" element={<Bar />} />
                     <Route path="/pie" element={<Pie />} />

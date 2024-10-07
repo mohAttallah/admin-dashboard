@@ -3,8 +3,8 @@ import axios from 'axios';
 class ApiService {
   constructor() {
     this.api = axios.create({
-      baseURL: process.env.REACT_APP_API_URL, 
-      timeout: 10000, 
+      baseURL: process.env.REACT_APP_API_URL,
+      timeout: 10000,
     });
 
     this.api.interceptors.request.use(
@@ -25,13 +25,38 @@ class ApiService {
     return this.api.get(path, { params });
   }
 
-  post(path, data) {
-    return this.api.post(path, data);
+  post(path, data, isMultipart = false) {
+    const headers = {};
+    if (isMultipart) {
+      headers['Content-Type'] = 'multipart/form-data';
+    } else {
+      headers['Content-Type'] = 'application/json';
+    }
+    return this.api.post(path, data, { headers });
   }
 
-  put(path, data) {
-    return this.api.put(path, data);
+  postFormData(path, formData) {
+    return this.post(path, formData, true); 
   }
+
+
+
+  put(path, data, isMultipart = false) {
+    const headers = {};
+    if (isMultipart) {
+      headers['Content-Type'] = 'multipart/form-data';
+    } else {
+      headers['Content-Type'] = 'application/json';
+    }
+    return this.api.put(path, data, { headers });
+
+  }
+
+
+  putFormData(path, formData) {
+    return this.put(path, formData, true); 
+  }
+
 
   delete(path) {
     return this.api.delete(path);
@@ -44,9 +69,8 @@ class ApiService {
 
   getToken() {
     const token = localStorage.getItem('token');
-    return token ?   token: null; 
+    return token ? token : null;
   }
-
 
   clearToken() {
     localStorage.removeItem('token');
@@ -70,7 +94,7 @@ class ApiService {
         return Promise.reject(error);
       }
     );
-    
+
     return apiWithoutBaseUrl;
   }
 }

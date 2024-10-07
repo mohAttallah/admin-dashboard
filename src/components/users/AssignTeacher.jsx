@@ -25,11 +25,12 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    event.preventDefault();
+
     if (!selectedUniversity || !specializationhInput) {
       setErrorMsg("All fields are required.");
       return;
     }
+
     setErrorMsg(null)
     dispatch(assignTeacher({ userId: selectedUniversity, "specialization": specializationhInput }));
     handleClose();
@@ -38,7 +39,6 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
   const handleUniversityChange = (event) => {
     console.log("Selected university:", event.target.value);
     setSelectedUniversity(event.target.value);
-
   };
 
   const handleSpecializationInput = (event) => {
@@ -55,7 +55,7 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
 
       {assignTeacherError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
       {assignTeacherSuccessfully && <SnackbarMsg text={"Assigned to Wallet Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
-      
+
       <Modal
         aria-labelledby="unstyled-modal-title"
         aria-describedby="unstyled-modal-description"
