@@ -35,7 +35,6 @@ function App() {
     if (isAuth) {
       setIsSidebar(true)
     }
-    console.log("isAuth",  isAuth);
 
   }, [isAuth]);
 
@@ -62,8 +61,8 @@ function App() {
 
                   <Topbar setIsSidebar={setIsSidebar} />
                   <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/users" element={<Users />} />
+                    {/* <Route path="/" element={<Dashboard />} /> */}
+                    <Route path="/" element={<Users />} />
                     <Route path="/university" element={<University />} />
                     <Route path="/Collage" element={<Collage />} />
                     <Route path="/Department" element={<Department />} />

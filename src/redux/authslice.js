@@ -17,8 +17,12 @@ export const login = createAsyncThunk(
     async (credentials, { rejectWithValue }) => {
         try {
             const response = await apiService.post('/auth/mobile/login', credentials);
-            apiService.setToken(response.data.token);
-            return response.data;
+            if (response.data.user.isAdmin) {
+                apiService.setToken(response.data.token);
+                return response.data;
+            } else {
+                return rejectWithValue({ message: 'Access denied' });
+            }
         } catch (error) {
             return rejectWithValue(error.response?.data || { message: error.message });
         }
@@ -54,14 +58,13 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.user = action.payload.user;
                 state.token = action.payload.token;
-                state.msg = action.payload.message
-                state.isAuth = true
+                state.msg = action.payload.message;
+                state.isAuth = true;
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
-                state.isAuth = false
-
+                state.isAuth = false;
             });
     },
 });

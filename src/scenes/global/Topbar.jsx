@@ -1,18 +1,30 @@
 import { Box, IconButton, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
-import InputBase from "@mui/material/InputBase";
+import  { useState } from 'react';
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
+import LogoutIcon from '@mui/icons-material/Logout';
+import  LogoutModal from "../../components/Logout";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const [open, setOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpen(true);
+  }
+  const  handleClose =()=>{
+    setOpen(false)
+  } 
+
+  const logout = () => {
+    // Add your logout logic here
+    console.log('User logged out');
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" p={0.5}>
@@ -22,24 +34,25 @@ const Topbar = () => {
         borderRadius="3px"
       >
       </Box>
+      <LogoutModal open={open} handleClose={handleClose} />
 
       <Box display="flex">
-        <IconButton onClick={colorMode.toggleColorMode}>
+        {/* <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
           ) : (
             <LightModeOutlinedIcon />
           )}
-        </IconButton>
-        <IconButton>
+        </IconButton> */}
+        {/* <IconButton>
           <NotificationsOutlinedIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton>
-          <SettingsOutlinedIcon />
+          <LogoutIcon onClick={handleOpenModal} />
         </IconButton>
-        <IconButton>
+        {/* <IconButton>
           <PersonOutlinedIcon />
-        </IconButton>
+        </IconButton> */}
       </Box>
     </Box>
   );

@@ -141,7 +141,7 @@ const SidebarComponent = () => {
             /> */}
             <Item
               title="Users"
-              to="/users"
+              to="/"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
