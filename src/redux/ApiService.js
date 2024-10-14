@@ -19,6 +19,25 @@ class ApiService {
         return Promise.reject(error);
       }
     );
+
+    this.api.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (error.response && error.response.status === 401) {
+
+          console.log('Unauthorized access - 401');
+          this.handleUnauthorized();
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  handleUnauthorized() {
+    this.clearToken();
+    window.location.href = '/';
   }
 
   get(path, params = {}) {
@@ -36,7 +55,7 @@ class ApiService {
   }
 
   postFormData(path, formData) {
-    return this.post(path, formData, true); 
+    return this.post(path, formData, true);
   }
 
 
@@ -54,7 +73,7 @@ class ApiService {
 
 
   putFormData(path, formData) {
-    return this.put(path, formData, true); 
+    return this.put(path, formData, true);
   }
 
 

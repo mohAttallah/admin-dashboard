@@ -12,7 +12,7 @@ import Users from "./scenes/users";
 import Collage from "./scenes/collage";
 import University from "./scenes/university";
 import Bar from "./scenes/bar";
-import Form from "./scenes/form";
+import ICourseCourses from "./scenes/i-courseCourses";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
@@ -20,8 +20,9 @@ import Geography from "./scenes/geography";
 import Calendar from "./scenes/calendar/calendar";
 import Login from './scenes/login';
 import Department from "./scenes/department";
-import  Materials from "./scenes/materials";
-import  Groups  from "./scenes/groups";
+import Materials from "./scenes/materials";
+import Groups  from "./scenes/groups";
+import IcourseCategory  from  "./scenes/i-courseCategory";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,7 +35,9 @@ function App() {
     if (isAuth) {
       setIsSidebar(true)
     }
-  }, []);
+    console.log("isAuth",  isAuth);
+
+  }, [isAuth]);
 
   return (
 
@@ -66,16 +69,17 @@ function App() {
                     <Route path="/Department" element={<Department />} />
                     <Route path="/Materials" element={<Materials />} />
                     <Route path="/Groups" element={<Groups />} />
+                    <Route path="/i-course" element={<ICourseCourses />} />
+                    <Route path="/i-category" element={<IcourseCategory />} />
 
 
-
-                    <Route path="/form" element={<Form />} />
                     <Route path="/bar" element={<Bar />} />
                     <Route path="/pie" element={<Pie />} />
                     <Route path="/line" element={<Line />} />
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/geography" element={<Geography />} />
+
                   </Routes>
                 </main>
               </>

@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiService from './ApiService';
-import EditCollage from '../components/collage/EditCollage';
-import { Edit } from '@mui/icons-material';
 const apiService = new ApiService();
 
 const initialState = {

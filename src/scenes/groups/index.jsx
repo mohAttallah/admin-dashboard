@@ -13,7 +13,7 @@ import { getCollageForEachUniversity, getDepartmentForEachCollage, getMaterialsF
 import AddNewMaterials from "../../components/materials/AddNewMaterials";
 import EditMaterials from "../../components/materials/EditMaterials";
 import DeleteMaterials from "../../components/materials/DeleteNewMaterials";
-
+import AddNewGroup  from  "../../components/groups/AddNewGroup";
 const Groups = () => {
 
 
@@ -36,7 +36,7 @@ const Groups = () => {
     const [selectedDepartment, setSelectedDepartment] = useState(null);
 
 
-    const [openNewMaterials, setOpenNewMaterials] = useState(false);
+    const [openNewGroup, setOpenNewGroup] = useState(false);
     const [openEditMaterial, setOpenEditMaterial] = useState(false);
     const [openDeleteMaterial, setOpenDeleteMaterial] = useState(false);
 
@@ -114,13 +114,13 @@ const Groups = () => {
     }, []);
 
 
-    const handleCloseModalNewMaterials = () => {
-        setOpenNewMaterials(false);
+    const handleCloseModalGroup = () => {
+        setOpenNewGroup(false);
     }
 
 
-    const handleOpenModalNewMaterialse = () => {
-        setOpenNewMaterials(true);
+    const handleOpenModalGroup= () => {
+        setOpenNewGroup(true);
     }
 
 
@@ -254,15 +254,14 @@ const Groups = () => {
         <Box m="20px">
             <Header title="Groups" subtitle="Manage Groups For Each Material" />
             <Box display="flex" flexDirection="row" gap={2} sx={{ width: '100%' }} >
-
-                <AddNewMaterials universityOptions={universityOptions} open={openNewMaterials} handleClose={handleCloseModalNewMaterials} />
+                <AddNewGroup universityOptions={universityOptions} open={openNewGroup} handleClose={handleCloseModalGroup} />
                 <EditMaterials selectedMaterials={selectedMaterial} universityOptions={universityOptions} open={openEditMaterial} handleClose={handleCloseModalEditMaterials} />
                 <DeleteMaterials selectedMaterial={selectedMaterial} open={openDeleteMaterial} handleClose={handleCloseModalDeleteMaterials} />
 
                 <Button
                     variant="contained"
                     sx={{ backgroundColor: '#0093e6', color: '#fff' }}
-                    onClick={() => { handleOpenModalNewMaterialse() }}
+                    onClick={() => { handleOpenModalGroup() }}
                 >
                     Add New Group
                 </Button>

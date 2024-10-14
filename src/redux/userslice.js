@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import ApiService from './ApiService';
 
 const apiService = new ApiService();
-const apiWithoutBaseUrl = apiService.createApiWithoutBaseUrl();
 
 const initialState = {
     data: [],

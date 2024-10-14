@@ -52,10 +52,10 @@ const Collage = () => {
   };
 
 
-  const universityOptions = universityListData.map((university) => ({
+  const universityOptions = (universityListData || []).map((university) => ({
     value: university._id,
     label: university.name,
-  }));
+}));
 
   useEffect(() => {
     dispatch(universityList());

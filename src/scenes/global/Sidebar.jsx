@@ -123,22 +123,22 @@ const SidebarComponent = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Ed Roh
+                  Mohammad Attallah
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  VP Fancy Admin
+                 Admin
                 </Typography>
               </Box>
             </Box>
           )}
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
+            {/* <Item
               title="Dashboard"
               to="/"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             <Item
               title="Users"
               to="/users"
@@ -168,7 +168,7 @@ const SidebarComponent = () => {
               setSelected={setSelected}
             />
 
-<Item
+            <Item
               title="Materials"
               to="/materials"
               icon={<CalendarTodayOutlinedIcon />}
@@ -184,17 +184,52 @@ const SidebarComponent = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              I Course
+            </Typography>
+
+            <Item
+              title="I Course - Category"
+              to="/i-category"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
 
 
             <Item
-              title="Profile Form"
+              title="I Course  - Courses"
+              to="/i-course"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="I Course  - Chapters"
               to="/form"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
- 
+
+
+            <Item
+              title="I Courrse - Classes"
+              to="/form"
+              icon={<PersonOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+
+{/* 
+
             <Item
               title="Calendar"
               to="/calendar"
@@ -246,7 +281,7 @@ const SidebarComponent = () => {
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
           </Box>
         </Menu>
       </Box>
