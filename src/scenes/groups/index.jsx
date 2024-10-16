@@ -11,9 +11,9 @@ import { universityList } from "../../redux/universityslice";
 import { useSelector, useDispatch } from 'react-redux';
 import { getCollageForEachUniversity, getDepartmentForEachCollage, getMaterialsForEachDepartment, getGroupsList } from "../../redux/universityslice";
 import AddNewMaterials from "../../components/materials/AddNewMaterials";
-import EditMaterials from "../../components/materials/EditMaterials";
+import EditGroup from "../../components/groups/EditGroup";
 import DeleteMaterials from "../../components/materials/DeleteNewMaterials";
-import AddNewGroup  from  "../../components/groups/AddNewGroup";
+import AddNewGroup from "../../components/groups/AddNewGroup";
 const Groups = () => {
 
 
@@ -27,14 +27,16 @@ const Groups = () => {
         groupsPginationsErorr,
         groupsLoading,
         groupsTotalRecords,
+        createGroupSuccessfully,
+        editGroupSuccessfully
 
     } = useSelector((state) => state.university);
     const [selectedUniversity, setSelectedUniversity] = useState(null)
 
-    const [selectedMaterial, setSelectedMaterial] = useState(null)
+    const [selectedGroup, setSelectedGroup] = useState(null)
     const [selectedCollage, setSelectedCollage] = useState(null);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
-
+    const [selectedMaterial, setSelectedMaterial] = useState(null);
 
     const [openNewGroup, setOpenNewGroup] = useState(false);
     const [openEditMaterial, setOpenEditMaterial] = useState(false);
@@ -65,7 +67,13 @@ const Groups = () => {
     }
 
 
+    useEffect(() => {
 
+        if (selectedMaterial) {
+            dispatch(getGroupsList({ "materialId": selectedMaterial }));
+        }
+        
+    }, [createGroupSuccessfully, editGroupSuccessfully])
 
 
 
@@ -79,10 +87,10 @@ const Groups = () => {
 
 
 
-    const handleMenuClick = (event, material) => {
-        setSelectedMaterial(null);
+    const handleMenuClick = (event, group) => {
+        setSelectedGroup(null);
         setAnchorEl(event.currentTarget);
-        setSelectedMaterial(material);
+        setSelectedGroup(group);
     };
 
     const handleMenuClose = () => {
@@ -119,7 +127,7 @@ const Groups = () => {
     }
 
 
-    const handleOpenModalGroup= () => {
+    const handleOpenModalGroup = () => {
         setOpenNewGroup(true);
     }
 
@@ -255,8 +263,8 @@ const Groups = () => {
             <Header title="Groups" subtitle="Manage Groups For Each Material" />
             <Box display="flex" flexDirection="row" gap={2} sx={{ width: '100%' }} >
                 <AddNewGroup universityOptions={universityOptions} open={openNewGroup} handleClose={handleCloseModalGroup} />
-                <EditMaterials selectedMaterials={selectedMaterial} universityOptions={universityOptions} open={openEditMaterial} handleClose={handleCloseModalEditMaterials} />
-                <DeleteMaterials selectedMaterial={selectedMaterial} open={openDeleteMaterial} handleClose={handleCloseModalDeleteMaterials} />
+                <EditGroup selectedGroup={selectedGroup} open={openEditMaterial} handleClose={handleCloseModalEditMaterials} />
+                {/* <DeleteMaterials selectedMaterial={selectedGroup} open={openDeleteMaterial} handleClose={handleCloseModalDeleteMaterials} /> */}
 
                 <Button
                     variant="contained"

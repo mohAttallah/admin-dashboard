@@ -211,7 +211,7 @@ const SidebarComponent = () => {
 
             <Item
               title="I Course  - Chapters"
-              to="/form"
+              to="/i-chapters"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -221,7 +221,7 @@ const SidebarComponent = () => {
 
             <Item
               title="I Courrse - Classes"
-              to="/form"
+              to="/i-chapters"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

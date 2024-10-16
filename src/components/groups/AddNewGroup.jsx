@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Box, InputBase, InputLabel, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { addNewMaterial } from "../../redux/universityslice";
+import { addNewGroup } from "../../redux/universityslice";
 import SnackbarMsg, { Severity, AnchorOrigin } from '../SnackbarMsg';
 import SelectComponent from "../../components/Select";
 import { getCollageForEachUniversity, getDepartmentForEachCollage, getMaterialsForEachDepartment } from "../../redux/universityslice";
@@ -19,15 +19,21 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
     const [collageId, setCollageId] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [name, setName] = useState(null);
+    const [description, setDescription] = useState(null);
     const [universityId, setUniversityId] = useState(null);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [selectedMaterial, setSelectedMaterial] = useState(null);
+    const [pricePerHour, setPricePerHour] = useState(null);
+    const [language, setLanguage] = useState(null)
+    const [status, setStatus] = useState(null);
+    const [type, setType] = useState(null);
     const [icon, setIcon] = useState(null);
     const [photoError, setPhotoError] = useState('');
+    const [tutorialType,  setTutorialType] =  useState(null)
     const [imageUrl, setImageUrl] = useState(null);
     const { collageListData, dapartmentList,
-        addMaterialSuccessfully, materilsList,
-        addMaterialError } = useSelector((state) => state.university);
+        createGroupSuccessfully, createGroupError, materilsList,
+         } = useSelector((state) => state.university);
     const [departmentId, setDepartmentId] = useState(null);
 
     const languageListOptions = [
@@ -35,32 +41,48 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
         { value: 'ar', label: 'Arabic' },
     ];
 
+    const StatusListOptions = [
+        { value: 'active', label: 'Active' },
+        { value: 'notActive', label: 'Disable' },
+    ];
+
+
     const groupTypeOptions = [
         { value: 'group', label: 'Group' },
         { value: 'individualized', label: 'Individualized' },
     ];
 
 
-    const tutorialType = [
+    const tutorialTypeOptions = [
         { value: 'liveTutorialCourses', label: 'Live Tutorial Courses' },
-        { value: 'recordedTutorialCourses', label: 'recorded Tutorial Courses' },
+        { value: 'recordedTutorialCourses', label: 'Recorded Tutorial Courses' },
     ];
 
 
 
     const handlePhotoChange = (event) => {
         const file = event.target.files[0];
-        console.log("file", file)
         if (file) {
             const validImageTypes = ['image/jpeg', 'image/png'];
             if (!validImageTypes.includes(file.type)) {
                 setIcon('Invalid file type. Please upload an image (jpeg, png).');
                 return;
             }
-            console.log("file", file)
             setIcon(file);
             setImageUrl(URL.createObjectURL(file))
             setPhotoError('');
+        }
+    };
+
+
+
+    const handlePriceChange = (event) => {
+        const value = event.target.value;
+        if (value === '' || (!isNaN(value) && value.trim() !== '')) {
+            setPricePerHour(value); 
+            setErrorMsg('');
+        } else {
+            setErrorMsg('Please enter a valid number');
         }
     };
 
@@ -98,7 +120,7 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
     const handleMaterialChange = (event) => {
         const selectedUniId = event.target.value;
         setSelectedMaterial(selectedUniId);
-        // dispatch(getGroupsList({ "materialId": selectedMaterial }));
+        console.log("selectedMaterial",  selectedMaterial)
     }
 
 
@@ -118,19 +140,27 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        if (!name || !selectedDepartment || !icon) {
+        if (!name || !icon || !description || !selectedMaterial || !pricePerHour || !language || !tutorialType  || !status || !type) {
             setErrorMsg('All Fields Are  Requierd !');
             return
         } else {
+            dispatch(addNewGroup({ name, selectedMaterial, description, language, icon, status, type, pricePerHour,  tutorialType }));
 
-            dispatch(addNewMaterial({ name, departmentId, icon }))
-
-            setName(null)
-            setSelectedDepartment(null)
+            setName(null);
+            setDescription(null);
             setIcon(null);
-            setErrorMsg(null);
+            setLanguage(null);
+            setStatus(null);
+            setType(null);
+            setPricePerHour(null);
+            setSelectedMaterial(null);
+            setImageUrl(null);
+            setTutorialType(null);
+            setPhotoError('');
+            setErrorMsg('');
+
             handleClose();
+
         }
 
     };
@@ -141,8 +171,8 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
         <div>
 
 
-            {addMaterialError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
-            {addMaterialSuccessfully && <SnackbarMsg text={"Create Material Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
+            {createGroupError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
+            {createGroupSuccessfully && <SnackbarMsg text={"Create Group Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
 
             <Modal
                 aria-labelledby="unstyled-modal-title"
@@ -213,8 +243,8 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
                                 <InputBase
                                     id="outlined-basic"
                                     label="Group Name"
-                                    value={''}
-                                    // onChange={(event) => setName(event.target.value)}
+                                    value={name}
+                                    onChange={(event) => setName(event.target.value)}
                                     fullWidth
                                     variant="outlined"
                                 />
@@ -226,11 +256,56 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
                                 </InputLabel>
                                 <InputBase
                                     id="outlined-basic"
-                                    label="Group Name"
-                                    value={''}
-                                    // onChange={(event) => setName(event.target.value)}
+                                    label="Description"
+                                    value={description}
+                                    onChange={(event) => setDescription(event.target.value)}
                                     fullWidth
                                     variant="outlined"
+                                />
+                            </Box>
+
+
+                            <Box mt={2} mb={2}>
+                                <SelectComponent
+                                    label="Select a language of Group"
+                                    width="100%"
+                                    value={language}
+                                    onChange={(event) => setLanguage(event.target.value)}
+                                    options={languageListOptions}
+                                />
+                            </Box>
+
+
+                            <Box mt={2} mb={2}>
+                                <SelectComponent
+                                    label="Group Status"
+                                    width="100%"
+                                    value={status}
+                                    onChange={(event) => setStatus(event.target.value)}
+                                    options={StatusListOptions}
+                                />
+                            </Box>
+
+
+
+                            <Box mt={2} mb={2}>
+                                <SelectComponent
+                                    label="Type of Group"
+                                    width="100%"
+                                    value={type}
+                                    onChange={(event) => setType(event.target.value)}
+                                    options={groupTypeOptions}
+                                />
+                            </Box>
+
+
+                            <Box mt={2} mb={2}>
+                                <SelectComponent
+                                    label="Tutorial Type"
+                                    width="100%"
+                                    value={tutorialType}
+                                    onChange={(event) => setTutorialType(event.target.value)}
+                                    options={tutorialTypeOptions}
                                 />
                             </Box>
 
@@ -242,14 +317,14 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
                                 <InputBase
                                     id="outlined-basic"
                                     label="Price Per Hour"
-                                    value={''}
-                                    // onChange={(event) => setName(event.target.value)}
+                                    value={pricePerHour}
+                                    onChange={(event) => handlePriceChange(event)}
                                     fullWidth
                                     variant="outlined"
                                 />
                             </Box>
-
                         </Box>
+
                         <Button
                             component="label"
                             role={undefined}
@@ -274,7 +349,6 @@ export default function AddNewGroup({ universityOptions, open, handleClose }) {
                         </Button>
 
                         {photoError && <p style={{ color: 'red' }}>{photoError}</p>}
-
 
                         <Box mt={1} mb={1}>
                             {errorMsg && (
@@ -368,6 +442,8 @@ const ModalContent = styled('div')(
       ${theme.palette.mode === 'dark' ? 'rgb(0 0 0 / 0.5)' : 'rgb(0 0 0 / 0.2)'};
     padding: 24px;
     color: ${theme.palette.mode === 'dark' ? grey[50] : grey[900]};
+    max-height: 80vh; /* Set max height */
+    overflow-y: auto; /* Enable vertical scrolling */
     & .modal-title {
       margin: 0;
       line-height: 1.5rem;

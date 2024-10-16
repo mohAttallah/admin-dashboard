@@ -16,7 +16,9 @@ const initialState = {
     editCategoryError: null,
     deleteCategorySuccessfully: null,
     deleteCategoryError: null,
-
+    chapters: [],
+    chaptersError: null,
+    chaptersLoading: null,
 
     // nextUrl: null,
     // previousUrl: null,
@@ -116,6 +118,19 @@ export const DeleteCategory = createAsyncThunk(
 );
 
 
+export const chaptersList = createAsyncThunk(
+    'i-course/chapters',
+    async ({selectedCourseId}, { rejectWithValue }) => {
+        try {
+            const response = await apiService.get(`/i-courses/chapters?courseId=${selectedCourseId}`);
+            return response.data;
+
+        } catch (error) {
+
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
 
 
 
@@ -203,6 +218,18 @@ const coursesSlice = createSlice({
             .addCase(DeleteCategory.rejected, (state, action) => {
                 state.loading = false;
                 state.deleteCategoryError = action.payload?.message || 'An error occurred';
+            })
+            .addCase(chaptersList.pending, (state) => {
+                state.chaptersLoading = true;
+                state.chaptersError = null;
+            })
+            .addCase(chaptersList.fulfilled, (state, action) => {
+                state.chaptersLoading = false;
+                state.chapters = action.payload.items;
+            })
+            .addCase(chaptersList.rejected, (state, action) => {
+                state.chaptersLoading = false;
+                state.chaptersError = action.payload?.message || 'An error occurred';
             })
 
 

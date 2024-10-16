@@ -20,34 +20,39 @@ const initialState = {
     deleteUniversityError: null,
     collageListData: [],
     collageListDataErorr: null,
-    addNewCollageSuccessfully : null,
-    addNewCollageError:null,
-    dapartmentList:[],
-    dapartmentListError:null,
-    AddDepartmentSuccessfully:null,
-    AddDepartmentError:null,
-    editDepartmentSuccessfully:null,
-    editDepartmentError:null,
-    deleteDepartmentSuccessfully:null,
-    deleteDepartmentError:null,
-    materilsList:[],
-    materilsListError:null,
-    editCollageSuccessfully:null,
-    editCollageError:null,
-    deleteCollageSuccessfully:null,
-    deleteCollageError:null,
-    addMaterialSuccessfully:null,
-    addMaterialError:null,
-    editMaterialSuccessfully:null,
-    editMaterialError:null,
-    deleteMaterialSuccessfully:null,
-    deleteMaterialError:null,
-
+    addNewCollageSuccessfully: null,
+    addNewCollageError: null,
+    dapartmentList: [],
+    dapartmentListError: null,
+    AddDepartmentSuccessfully: null,
+    AddDepartmentError: null,
+    editDepartmentSuccessfully: null,
+    editDepartmentError: null,
+    deleteDepartmentSuccessfully: null,
+    deleteDepartmentError: null,
+    materilsList: [],
+    materilsListError: null,
+    editCollageSuccessfully: null,
+    editCollageError: null,
+    deleteCollageSuccessfully: null,
+    deleteCollageError: null,
+    addMaterialSuccessfully: null,
+    addMaterialError: null,
+    editMaterialSuccessfully: null,
+    editMaterialError: null,
+    deleteMaterialSuccessfully: null,
+    deleteMaterialError: null,
     groupsListData: [],
     groupsPginationsData: [],
     groupsPginationsErorr: null,
     groupsLoading: false,
     groupsTotalRecords: 0,
+    createGroupSuccessfully: null,
+    createGroupError: null,
+    editGroupSuccessfully: null,
+    editGroupError: null,
+
+
 
 };
 
@@ -160,7 +165,7 @@ export const getCollageForEachUniversity = createAsyncThunk(
 
         } catch (error) {
             console.log("error.message", error.message);
-            
+
             return rejectWithValue(error.response?.data || { message: error.message });
         }
     }
@@ -197,7 +202,7 @@ export const editCollage = createAsyncThunk(
     async ({ collageId, name, nameInArabic, universityId }, { rejectWithValue }) => {
         try {
             const data = {
-                "collegeId":collageId,
+                "collegeId": collageId,
                 "university": universityId,
                 "name": name,
                 "nameInArabic": nameInArabic
@@ -217,7 +222,7 @@ export const editCollage = createAsyncThunk(
 
 export const deleteCollage = createAsyncThunk(
     'university/delete-collage',
-    async ({ collageId}, { rejectWithValue }) => {
+    async ({ collageId }, { rejectWithValue }) => {
         try {
 
             const response = await apiService.delete(`/university/collage/delete-collage?collageId=${collageId}`);
@@ -232,7 +237,7 @@ export const deleteCollage = createAsyncThunk(
 );
 
 
-export const getDepartmentForEachCollage= createAsyncThunk(
+export const getDepartmentForEachCollage = createAsyncThunk(
     'university/department',
     async ({ collageId }, { rejectWithValue }) => {
 
@@ -243,7 +248,7 @@ export const getDepartmentForEachCollage= createAsyncThunk(
 
         } catch (error) {
             console.log("error.message", error.message);
-            
+
             return rejectWithValue(error.response?.data || { message: error.message });
         }
     }
@@ -254,7 +259,7 @@ export const addNewDepartment = createAsyncThunk(
     'university/department-create',
     async ({ name, nameInArabic, collageId }, { rejectWithValue }) => {
         try {
-            
+
             const data = {
                 "college": collageId,
                 "name": name,
@@ -277,7 +282,7 @@ export const editDepartment = createAsyncThunk(
     'university/department-edit',
     async ({ name, nameInArabic, departmentId }, { rejectWithValue }) => {
         try {
-            
+
             const data = {
                 "departmentId": departmentId,
                 "name": name,
@@ -307,12 +312,13 @@ export const deleteDepartment = createAsyncThunk(
         } catch (error) {
             console.log("error.message", error.message);
             console.log("error.response?.data ", error.response?.data);
-        }});
+        }
+    });
 
 
 
 
-export const getMaterialsForEachDepartment= createAsyncThunk(
+export const getMaterialsForEachDepartment = createAsyncThunk(
     'university/materials',
     async ({ departmentId }, { rejectWithValue }) => {
         try {
@@ -321,7 +327,7 @@ export const getMaterialsForEachDepartment= createAsyncThunk(
 
         } catch (error) {
             console.log("error.message", error.message);
-            
+
             return rejectWithValue(error.response?.data || { message: error.message });
         }
     }
@@ -395,6 +401,62 @@ export const getGroupsList = createAsyncThunk(
     }
 );
 
+
+export const addNewGroup = createAsyncThunk(
+    '/groups/new',
+    async ({ name, selectedMaterial, description, language, icon, status, type, pricePerHour,  tutorialType }, { rejectWithValue }) => {
+        try {
+
+            const formData = new FormData();
+
+            formData.append('name', name);
+            formData.append('materialId', selectedMaterial);
+            formData.append('description', description);
+            formData.append('language', language);
+            formData.append('status', status);
+            formData.append('type', type);
+            formData.append('icon', icon);
+            formData.append('pricePerHour', pricePerHour);
+            formData.append('tutorialType', tutorialType);
+
+            const response = await apiService.postFormData(`/groups/create`, formData);
+            return response.data;
+
+        } catch (error) {
+            console.log("error.message", error)
+            console.log("error.response?.data ", error.response?.data);
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
+
+export const editGroup = createAsyncThunk(
+    '/groups/edit',
+    async ({ groupId,  name,  description, language, icon, status, type, pricePerHour,  tutorialType }, { rejectWithValue }) => {
+        try {
+
+            const formData = new FormData();
+
+            formData.append('name', name);
+            formData.append('groupId', groupId);
+            formData.append('description', description);
+            formData.append('language', language);
+            formData.append('status', status);
+            formData.append('type', type);
+            formData.append('icon', icon);
+            formData.append('pricePerHour', pricePerHour);
+            formData.append('tutorialType', tutorialType);
+
+            const response = await apiService.postFormData(`/groups/edit`, formData);
+            return response.data;
+
+        } catch (error) {
+            console.log("error.message", error)
+            console.log("error.response?.data ", error.response?.data);
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
 
 
 
@@ -496,7 +558,7 @@ const universitySlice = createSlice({
             .addCase(addNewCollage.fulfilled, (state, action) => {
                 state.addNewCollageSuccessfully = true
                 state.addNewCollageError = false;
-            })            
+            })
             .addCase(addNewCollage.rejected, (state, action) => {
                 state.addNewCollageSuccessfully = false
                 state.addNewCollageError = true;
@@ -508,7 +570,7 @@ const universitySlice = createSlice({
             .addCase(editCollage.pending, (state, action) => {
                 state.editCollageSuccessfully = null
                 state.editCollageError = null;
-            })                     
+            })
             .addCase(editCollage.rejected, (state, action) => {
                 state.editCollageSuccessfully = false
                 state.editCollageError = true;
@@ -520,7 +582,7 @@ const universitySlice = createSlice({
             .addCase(deleteCollage.pending, (state, action) => {
                 state.deleteCollageSuccessfully = null
                 state.deleteCollageError = null;
-            })                     
+            })
             .addCase(deleteCollage.rejected, (state, action) => {
                 state.deleteCollageSuccessfully = false
                 state.deleteCollageError = true;
@@ -528,13 +590,13 @@ const universitySlice = createSlice({
             .addCase(getDepartmentForEachCollage.pending, (state, action) => {
                 state.loading = true;
                 state.dapartmentListError = false;
-                state.dapartmentList=[];
+                state.dapartmentList = [];
             })
             .addCase(getDepartmentForEachCollage.fulfilled, (state, action) => {
-                state.dapartmentList =  action.payload.items;
+                state.dapartmentList = action.payload.items;
                 state.dapartmentListError = false;
                 state.loading = false
-            })            
+            })
             .addCase(getDepartmentForEachCollage.rejected, (state, action) => {
                 state.dapartmentList = []
                 state.dapartmentListError = true;
@@ -547,7 +609,7 @@ const universitySlice = createSlice({
             .addCase(addNewDepartment.pending, (state, action) => {
                 state.AddDepartmentSuccessfully = null
                 state.AddDepartmentError = null;
-            })                     
+            })
             .addCase(addNewDepartment.rejected, (state, action) => {
                 state.AddDepartmentSuccessfully = false
                 state.AddDepartmentError = true;
@@ -580,13 +642,13 @@ const universitySlice = createSlice({
             .addCase(getMaterialsForEachDepartment.pending, (state, action) => {
                 state.loading = true;
                 state.dapartmentListError = false;
-                state.materilsList=[];
+                state.materilsList = [];
             })
             .addCase(getMaterialsForEachDepartment.fulfilled, (state, action) => {
-                state.materilsList =  action.payload.items;
+                state.materilsList = action.payload.items;
                 state.materilsListError = false;
                 state.loading = false
-            })            
+            })
             .addCase(getMaterialsForEachDepartment.rejected, (state, action) => {
                 state.materilsList = []
                 state.materilsListError = true;
@@ -636,11 +698,41 @@ const universitySlice = createSlice({
                 state.groupsLoading = false;
                 state.groupsListData = action.payload.items;
                 state.groupsTotalRecords = action.payload.links.totalRecord;
+                state.createGroupSuccessfully = null;
+                state.createGroupError = null;
+                state.editGroupSuccessfully = null;
+                state.editGroupError = null;
             })
             .addCase(getGroupsList.rejected, (state, action) => {
                 state.groupsLoading = false;
                 state.groupsPginationsErorr = action.payload.message;
             })
+            .addCase(addNewGroup.fulfilled, (state, action) => {
+                state.createGroupSuccessfully = true;
+                state.createGroupError = false;
+            })
+            .addCase(addNewGroup.pending, (state, action) => {
+                state.createGroupSuccessfully = null;
+                state.createGroupError = null;
+            })
+            .addCase(addNewGroup.rejected, (state, action) => {
+                state.createGroupSuccessfully = false;
+                state.createGroupError = true;
+            })
+            .addCase(editGroup.fulfilled, (state, action) => {
+                state.editGroupSuccessfully = true;
+                state.editGroupError = false;
+            })
+            .addCase(editGroup.pending, (state, action) => {
+                state.editGroupSuccessfully = null;
+                state.editGroupError = null;
+            })
+            .addCase(editGroup.rejected, (state, action) => {
+                state.editGroupSuccessfully = false;
+                state.editGroupError = true;
+            })
+
+
 
     },
 });

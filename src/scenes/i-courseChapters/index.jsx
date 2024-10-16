@@ -13,27 +13,28 @@ import InputBase from "@mui/material/InputBase";
 import AddNewUnivesity from "../../components/university/AddNewUniversity"
 import EditUniversity from "../../components/university/EditUniversity";
 import DeleteUniversity from "../../components/university/DeleteUniversity";
-import { coursesList, categoryList } from "../../redux/icourseslice";
+import { coursesList, categoryList, chaptersList } from "../../redux/icourseslice";
 import SelectComponent from "../../components/Select"
 
-const IcourseCourses = () => {
+const IcourseChapters = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0 });
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const { loading, categories, totalRecords, courses } = useSelector((state) => state.icourse);
-
+  const { loading, categories, totalRecords, courses, chapters,  chaptersLoading } = useSelector((state) => state.icourse);
+  
   const [selectedUniversity, setSelectedUniversity] = useState(null);
   const [searchValue, setSearchValue] = useState(null);
   const [openNewUnivesity, setOpenNewUnivesity] = useState(false);
   const [openEditUnivesity, setOpenEditUnivesity] = useState(false);
   const [openDeleteUnivesity, setOpenDeleteUnivesity] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   useEffect(() => {
-    document.title = "I Course | Admin Panel";
+    document.title = "I Course - Chapters | Admin Panel";
     dispatch(categoryList());
     setPaginationModel({
       pageSize: courses?.length || 10,
@@ -47,14 +48,29 @@ const IcourseCourses = () => {
   const handleCategoryChange = (event) => {
     const selectedUniId = event.target.value;
     setSelectedCategory(selectedUniId);
-    dispatch(coursesList({selectedCategory}));
-    console.log("coursesList", coursesList)
+    dispatch(coursesList({ selectedCategory }));
   };
+
+  const handleCourseChange = (event) => {
+    const selectedCourseId = event.target.value;
+    setSelectedCourse(selectedCourseId);
+    dispatch(chaptersList({ selectedCourseId }));
+    console.log(selectedCourseId);
+    console.log("chapters",  chapters);
+  }
 
   const categoriesOptions = (categories || []).map((category) => ({
     value: category?._id,
     label: category?.title,
-}));
+  }));
+
+
+  const categoriesCourses = (courses || []).map((course) => ({
+    value: course?._id,
+    label: course?.title,
+  }));
+
+
 
   // useEffect(() => {
   //   if (addNewUniversitySuccessfully === true || editUniversitySuccessfully===true || deleteUniversitySuccessfully===true) {
@@ -73,12 +89,6 @@ const IcourseCourses = () => {
     setSelectedUniversity(university);
   };
 
-  const handlePaginations = (model) => {
-    setSearchValue(null);
-    const offset = model.page * model.pageSize;
-    // dispatch(getNextUniversityData({ limit: model.pageSize, offset }));
-    setPaginationModel(model);
-  };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -115,9 +125,6 @@ const IcourseCourses = () => {
     handleMenuClose()
   }
 
-  const handleSearch = () => {
-
-  }
 
   const columns = [
     { field: "id", headerName: "ID" },
@@ -127,39 +134,7 @@ const IcourseCourses = () => {
       flex: 1,
       cellClassName: "name-column--cell",
     },
-    {
-      field: "type",
-      headerName: "Type",
-      type: "string",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "status",
-      headerName: "status",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "coverUrl",
-      headerName: "cover",
-      flex: 1,
-      renderCell: (params) => (
-        <img
-          src={params.value}
-          alt="Photo"
-          style={{ width: '20%', height: 'auto', objectFit: 'cover' }}
-        />
-      ),
-    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -180,8 +155,8 @@ const IcourseCourses = () => {
   return (
     <Box m="20px">
       <Header
-        title="I-Course - Courses"
-        subtitle="Managing the Courses"
+        title="I-Course - Chapters"
+        subtitle="Managing the Chapters  of I-Course"
       />
       {/* Modal */}
       <AddNewUnivesity open={openNewUnivesity} handleClose={handleCloseModalNewUnivesity} />
@@ -201,13 +176,22 @@ const IcourseCourses = () => {
         </Button>
 
         <SelectComponent
-                    label="Select a Category"
-                    width="25%"
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                    options={categoriesOptions}
-                />
+          label="Select a Category"
+          width="25%"
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          options={categoriesOptions}
+        />
+
+        <SelectComponent
+          label="Select a Course"
+          width="25%"
+          value={selectedCourse}
+          onChange={handleCourseChange}
+          options={categoriesCourses}
+        />
       </Box>
+
 
 
 
@@ -244,25 +228,21 @@ const IcourseCourses = () => {
         }}
       >
 
+
         <DataGrid
+          loading={chaptersLoading}
           checkboxSelection
-          rows={courses || []}
           columns={columns}
-          pageSize={10}
-          rowCount={totalRecords}
+          rows={chapters || []}
           getRowId={(row) => row._id}
-          paginationMode="server"
-          loading={loading}
-          pagination
-          paginationModel={paginationModel}
-          onPaginationModelChange={(model) => {
-            handlePaginations(model);
-          }}
         />
+
+
+
 
       </Box>
     </Box>
   );
 };
 
-export default IcourseCourses;
+export default IcourseChapters;

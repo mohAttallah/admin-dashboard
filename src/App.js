@@ -23,7 +23,7 @@ import Department from "./scenes/department";
 import Materials from "./scenes/materials";
 import Groups  from "./scenes/groups";
 import IcourseCategory  from  "./scenes/i-courseCategory";
-
+import IcourseChapters  from  "./scenes/i-courseChapters";
 function App() {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.auth);
@@ -70,7 +70,7 @@ function App() {
                     <Route path="/Groups" element={<Groups />} />
                     <Route path="/i-course" element={<ICourseCourses />} />
                     <Route path="/i-category" element={<IcourseCategory />} />
-
+                    <Route path="/i-chapters" element={<IcourseChapters />} />
 
                     <Route path="/bar" element={<Bar />} />
                     <Route path="/pie" element={<Pie />} />
