@@ -51,9 +51,9 @@ const initialState = {
     createGroupError: null,
     editGroupSuccessfully: null,
     editGroupError: null,
-
-
-
+    requestGroups:[],
+    deleteGroupSuccessfully: null,
+    deleteGroupError: null,
 };
 
 export const universityList = createAsyncThunk(
@@ -404,7 +404,7 @@ export const getGroupsList = createAsyncThunk(
 
 export const addNewGroup = createAsyncThunk(
     '/groups/new',
-    async ({ name, selectedMaterial, description, language, icon, status, type, pricePerHour,  tutorialType }, { rejectWithValue }) => {
+    async ({ name, selectedMaterial, description, language, icon, status, type, pricePerHour, tutorialType }, { rejectWithValue }) => {
         try {
 
             const formData = new FormData();
@@ -432,7 +432,7 @@ export const addNewGroup = createAsyncThunk(
 
 export const editGroup = createAsyncThunk(
     '/groups/edit',
-    async ({ groupId,  name,  description, language, icon, status, type, pricePerHour,  tutorialType }, { rejectWithValue }) => {
+    async ({ groupId, name, description, language, icon, status, type, pricePerHour, tutorialType }, { rejectWithValue }) => {
         try {
 
             const formData = new FormData();
@@ -460,9 +460,29 @@ export const editGroup = createAsyncThunk(
 
 
 
+export const requestGroup = createAsyncThunk(
+    'groups/request-group',
+    async ( _ , { rejectWithValue }) => {
+        try {
+            const response = await apiService.get(`/groups/request-group`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
 
-
-
+export  const deleteGroup = createAsyncThunk(
+    'groups/delete-group',
+    async ({ groupId }, { rejectWithValue }) => {
+        try {
+            const response = await apiService.delete(`/groups/delete?groupId=${groupId}`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
 
 
 
@@ -731,8 +751,36 @@ const universitySlice = createSlice({
                 state.editGroupSuccessfully = false;
                 state.editGroupError = true;
             })
-
-
+            .addCase(requestGroup.fulfilled, (state, action) => {
+                state.requestGroups = action.payload.items;
+                state.error = false;
+                state.loading= false
+            })
+            .addCase(requestGroup.pending, (state, action) => {
+                state.requestGroups = null;
+                state.error = null;
+                state.loading= true
+            })
+            .addCase(requestGroup.rejected, (state, action) => {
+                state.requestGroups = null;
+                state.error = true;
+                state.loading= false;
+            })
+            .addCase(deleteGroup.fulfilled, (state, action) => {
+                state.deleteGroupSuccessfully = true;
+                state.deleteGroupError = false;
+                state.loading= false;
+            })
+            .addCase(deleteGroup.pending, (state, action) => {
+                state.deleteGroupSuccessfully = null;
+                state.deleteGroupError = null;
+                state.loading= true;
+            })
+            .addCase(deleteGroup.rejected, (state, action) => {
+                state.deleteGroupSuccessfully = false;
+                state.deleteGroupError = true;
+                state.loading= false;
+            })
 
     },
 });

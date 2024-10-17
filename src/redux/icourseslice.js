@@ -4,6 +4,7 @@ import ApiService from './ApiService';
 const apiService = new ApiService();
 
 const initialState = {
+    
     courses: [],
     loading: false,
     totalRecords: 0,
@@ -19,16 +20,9 @@ const initialState = {
     chapters: [],
     chaptersError: null,
     chaptersLoading: null,
+    classes:[],
+    classesError: null,
 
-    // nextUrl: null,
-    // previousUrl: null,
-    // currentUrl: null,
-    // walletLoading: null,
-    // walletError: null,
-    // walletSuccessfully : null,
-    // assignTeacherLoading: null,
-    // assignTeacherError: null,
-    // assignTeacherSuccessfully : null
 };
 
 
@@ -132,11 +126,24 @@ export const chaptersList = createAsyncThunk(
     }
 );
 
+export const classesList = createAsyncThunk(
+    'i-course/classes',
+    async ({selectedChapterId}, { rejectWithValue }) => {
+        try {
+
+            const response = await apiService.get(`/i-courses/classes?cahpterId=${selectedChapterId}`);
+            return response.data;
+
+        } catch (error) {
+
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
 
 
-const updateFulfilledState = (state, action) => {
-    
-};
+
+
 
 const coursesSlice = createSlice({
     name: 'icourse',
@@ -220,18 +227,30 @@ const coursesSlice = createSlice({
                 state.deleteCategoryError = action.payload?.message || 'An error occurred';
             })
             .addCase(chaptersList.pending, (state) => {
-                state.chaptersLoading = true;
+                state.loading = true;
                 state.chaptersError = null;
             })
             .addCase(chaptersList.fulfilled, (state, action) => {
-                state.chaptersLoading = false;
+                state.loading = false;
+                console.log("action.payload.items chaptersList",  action.payload.items);
                 state.chapters = action.payload.items;
             })
             .addCase(chaptersList.rejected, (state, action) => {
-                state.chaptersLoading = false;
+                state.loading = false;
                 state.chaptersError = action.payload?.message || 'An error occurred';
             })
-
+            .addCase(classesList.pending, (state) => {
+                state.loading = true;
+                state.classesError = null;
+            })
+            .addCase(classesList.fulfilled, (state, action) => {
+                state.loading = false;
+                state.classes = action.payload.items;
+            })
+            .addCase(classesList.rejected, (state, action) => {
+                state.loading = false;
+                state.classesError = action.payload?.message || 'An error occurred';
+            })
 
         },
 });

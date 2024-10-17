@@ -10,13 +10,11 @@ import { useEffect, useState } from 'react';
 import { universityList } from "../../redux/universityslice";
 import { useSelector, useDispatch } from 'react-redux';
 import { getCollageForEachUniversity, getDepartmentForEachCollage, getMaterialsForEachDepartment, getGroupsList } from "../../redux/universityslice";
-import AddNewMaterials from "../../components/materials/AddNewMaterials";
 import EditGroup from "../../components/groups/EditGroup";
-import DeleteMaterials from "../../components/materials/DeleteNewMaterials";
 import AddNewGroup from "../../components/groups/AddNewGroup";
+import DeleteGroupModal  from  "../../components/groups/DeleteGroup";
+
 const Groups = () => {
-
-
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const dispatch = useDispatch();
@@ -28,7 +26,8 @@ const Groups = () => {
         groupsLoading,
         groupsTotalRecords,
         createGroupSuccessfully,
-        editGroupSuccessfully
+        editGroupSuccessfully,
+        deleteGroupSuccessfully
 
     } = useSelector((state) => state.university);
     const [selectedUniversity, setSelectedUniversity] = useState(null)
@@ -40,7 +39,7 @@ const Groups = () => {
 
     const [openNewGroup, setOpenNewGroup] = useState(false);
     const [openEditMaterial, setOpenEditMaterial] = useState(false);
-    const [openDeleteMaterial, setOpenDeleteMaterial] = useState(false);
+    const [openDeleteGroup, setOpenDelteGroup] = useState(false);
 
     const handleUniversityChange = (event) => {
         const selectedUniId = event.target.value;
@@ -69,11 +68,11 @@ const Groups = () => {
 
     useEffect(() => {
 
-        if (selectedMaterial) {
+        if (selectedMaterial && (createGroupSuccessfully === true || editGroupSuccessfully === true || deleteGroupSuccessfully === true)) {
             dispatch(getGroupsList({ "materialId": selectedMaterial }));
         }
         
-    }, [createGroupSuccessfully, editGroupSuccessfully])
+    }, [createGroupSuccessfully, editGroupSuccessfully,  deleteGroupSuccessfully])
 
 
 
@@ -141,12 +140,12 @@ const Groups = () => {
         handleMenuClose();
     }
 
-    const handleCloseModalDeleteMaterials = () => {
-        setOpenDeleteMaterial(false);
+    const handleOpenDeleteGroup = () => {
+        setOpenDelteGroup(true);
     }
 
-    const handleOpenModalDeleteMaterials = () => {
-        setOpenDeleteMaterial(true);
+    const handleCloseDeleteGroup = () => {
+        setOpenDelteGroup(false);
         handleMenuClose();
     }
 
@@ -249,7 +248,7 @@ const Groups = () => {
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                         <MenuItem onClick={() => handleOpenModalEditMaterials()}       >Edit</MenuItem>
-                        <MenuItem onClick={() => handleOpenModalDeleteMaterials()} >Delete</MenuItem>
+                        <MenuItem onClick={() => handleOpenDeleteGroup()} >Delete</MenuItem>
                     </Menu>
                 </>
             ),
@@ -264,8 +263,7 @@ const Groups = () => {
             <Box display="flex" flexDirection="row" gap={2} sx={{ width: '100%' }} >
                 <AddNewGroup universityOptions={universityOptions} open={openNewGroup} handleClose={handleCloseModalGroup} />
                 <EditGroup selectedGroup={selectedGroup} open={openEditMaterial} handleClose={handleCloseModalEditMaterials} />
-                {/* <DeleteMaterials selectedMaterial={selectedGroup} open={openDeleteMaterial} handleClose={handleCloseModalDeleteMaterials} /> */}
-
+                <DeleteGroupModal selectedGroup={selectedGroup} open={openDeleteGroup} handleClose={handleCloseDeleteGroup} />
                 <Button
                     variant="contained"
                     sx={{ backgroundColor: '#0093e6', color: '#fff' }}

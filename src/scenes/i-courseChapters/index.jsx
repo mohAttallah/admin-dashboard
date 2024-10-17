@@ -56,7 +56,7 @@ const IcourseChapters = () => {
     setSelectedCourse(selectedCourseId);
     dispatch(chaptersList({ selectedCourseId }));
     console.log(selectedCourseId);
-    console.log("chapters",  chapters);
+    console.log("chapters111",  chapters);
   }
 
   const categoriesOptions = (categories || []).map((category) => ({
@@ -93,8 +93,6 @@ const IcourseChapters = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-
 
   const handleCloseModalNewUnivesity = () => {
     setOpenNewUnivesity(false);
@@ -190,6 +188,7 @@ const IcourseChapters = () => {
           onChange={handleCourseChange}
           options={categoriesCourses}
         />
+
       </Box>
 
 
@@ -230,7 +229,7 @@ const IcourseChapters = () => {
 
 
         <DataGrid
-          loading={chaptersLoading}
+          loading={loading}
           checkboxSelection
           columns={columns}
           rows={chapters || []}

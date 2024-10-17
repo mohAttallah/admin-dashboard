@@ -24,6 +24,8 @@ import Materials from "./scenes/materials";
 import Groups  from "./scenes/groups";
 import IcourseCategory  from  "./scenes/i-courseCategory";
 import IcourseChapters  from  "./scenes/i-courseChapters";
+import IcourseClasses  from "./scenes/i-courseClasses";
+import RequestGroup  from  "./scenes/requestGroup/index";
 function App() {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.auth);
@@ -71,6 +73,8 @@ function App() {
                     <Route path="/i-course" element={<ICourseCourses />} />
                     <Route path="/i-category" element={<IcourseCategory />} />
                     <Route path="/i-chapters" element={<IcourseChapters />} />
+                    <Route path="/i-classes" element={<IcourseClasses />} />
+                    <Route path="/request-group" element={<RequestGroup />} />
 
                     <Route path="/bar" element={<Bar />} />
                     <Route path="/pie" element={<Pie />} />

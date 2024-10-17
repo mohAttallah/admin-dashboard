@@ -16,7 +16,13 @@ const initialState = {
     walletSuccessfully : null,
     assignTeacherLoading: null,
     assignTeacherError: null,
-    assignTeacherSuccessfully : null
+    assignTeacherSuccessfully : null,
+    deleteUserSuccessfully: null,
+    deleteUserError: null,
+    reactivatedUserSuccessfully: null,
+    reactivatedUserError: null,
+    removeTeacherSuccessfully: null,
+    removeTeacherError: null,
 };
 
 
@@ -79,8 +85,54 @@ export const assignTeacher= createAsyncThunk(
     '/teachers/assign',
     async (data, { rejectWithValue }) => {
         try {
+            console.log("data assign teacher", data);
 
             const response = await apiService.post('/teachers/assign', data);
+            return response.data;
+        } catch (error) {
+            console.log("error.response?.data ", error.response?.data.message);
+            console.log("error.message", error.message);
+            return rejectWithValue( error.response?.data.message || { message: error.message });
+        }
+    }
+);
+
+
+export const removeTeacher= createAsyncThunk(
+    '/teachers/delete',
+    async ({userId}, { rejectWithValue }) => {
+        try {
+            console.log("userId", userId)
+            const response = await apiService.delete(`/teachers/delete-teacher?userId=${userId}`, );
+            return response.data;
+        } catch (error) {
+            console.log("error.response?.data ", error.response?.data.message);
+            console.log("error.message", error.message);
+            return rejectWithValue( error.response?.data.message || { message: error.message });
+        }
+    }
+);
+
+export const deleteUserById= createAsyncThunk(
+    '/users/delete',
+    async ({userId}, { rejectWithValue }) => {
+        try {
+            const response = await apiService.delete(`/users/delete-user?userId=${userId}`);
+
+            return response.data;
+
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: error.message });
+        }
+    }
+);
+
+export  const reactivatedUserById= createAsyncThunk(
+    '/users/reactivated',
+    async ({userId}, { rejectWithValue }) => {
+        try {
+            const data = { userId }
+            const response = await apiService.patch(`/users/re-activate-user`, data);
 
             return response.data;
 
@@ -170,9 +222,54 @@ const usersSlice = createSlice({
             })
             .addCase(assignTeacher.rejected, (state, action) => {
                 state.assignTeacherLoading = false;
-                state.assignTeacherError = action.payload.message;
+                state.assignTeacherError = true;
                 state.assignTeacherSuccessfully = false;
-            });
+            })
+            .addCase(deleteUserById.pending, (state) => {
+                state.loading = true;
+                state.deleteUserError = null;
+                state.deleteUserSuccessfully = false;
+            })
+            .addCase(deleteUserById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.deleteUserError = null;
+                state.deleteUserSuccessfully = true;
+            })
+            .addCase(deleteUserById.rejected, (state, action) => {
+                state.loading = false;
+                state.deleteUserError = action.payload.message;
+                state.deleteUserSuccessfully = false;
+            })
+            .addCase(reactivatedUserById.pending, (state) => {
+                state.loading = true;
+                state.reactivatedUserError = null;
+                state.reactivatedUserSuccessfully = false;
+            })
+            .addCase(reactivatedUserById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.reactivatedUserError = null;
+                state.reactivatedUserSuccessfully = true;
+            })
+            .addCase(reactivatedUserById.rejected, (state, action) => {
+                state.loading = false;
+                state.reactivatedUserError = action.payload.message;
+                state.reactivatedUserSuccessfully = false;
+            })
+            .addCase(removeTeacher.pending, (state) => {
+                state.loading = true;
+                state.removeTeacherError = null;
+                state.removeTeacherSuccessfully = false;
+            })
+            .addCase(removeTeacher.fulfilled, (state, action) => {
+                state.loading = false;
+                state.removeTeacherError = null;
+                state.removeTeacherSuccessfully = true;
+            })
+            .addCase(removeTeacher.rejected, (state, action) => {
+                state.loading = false;
+                state.removeTeacherError =true
+                state.removeTeacherSuccessfully = false;
+            })
 
         },
 });

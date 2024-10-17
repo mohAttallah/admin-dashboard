@@ -5,11 +5,8 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { useSelector, useDispatch } from 'react-redux';
-import { universityListPginations, getNextUniversityData } from "../../redux/universityslice"
 import { useState, useEffect } from "react"
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import SearchIcon from "@mui/icons-material/Search";
-import InputBase from "@mui/material/InputBase";
 import AddNewCategory from "../../components/i-course/category/AddNewCategory"
 import EditCategory from "../../components/i-course/category/EditCategory";
 import DeleteCategory from "../../components/i-course/category/DeleteCategory";
@@ -32,7 +29,6 @@ const IcourseCategory = () => {
     useEffect(() => {
         document.title = "I Course - Category | Admin Panel";
         dispatch(categoryList())
-
     }, [])
 
 
@@ -40,7 +36,6 @@ const IcourseCategory = () => {
 
         if (addNewCategorySuccessfully === true || editCategorySuccessfully === true || deleteCategorySuccessfully === true) {
             dispatch(categoryList())
-
         }
 
     }, [addNewCategorySuccessfully,  editCategorySuccessfully,  deleteCategorySuccessfully])
@@ -52,12 +47,9 @@ const IcourseCategory = () => {
         setSelectedCategory(category);
     };
 
-
-
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
-
 
 
     const handleCloseModalNewCategory = () => {
@@ -145,13 +137,12 @@ const IcourseCategory = () => {
             <AddNewCategory open={openNewCategory} handleClose={handleCloseModalNewCategory} />
             <EditCategory selectedCategory={selectedCategory} open={openEditCategory} handleClose={handleCloseModalEditCategory}/>
             <DeleteCategory selectedCategory={selectedCategory} open={openDeleteCatagory} handleClose={handleCloseModalDeleteCatagory}/>
-            {/*  
-      
- */}
+
             {/* open, handleClose, universityId */}
 
             <Box display="flex" flexDirection="row" gap={2} sx={{ width: '100%' }}>
                 <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="3px">
+
                 </Box>
 
                 <Button
@@ -161,6 +152,7 @@ const IcourseCategory = () => {
                 >
                     Add New Category
                 </Button>
+
             </Box>
 
 

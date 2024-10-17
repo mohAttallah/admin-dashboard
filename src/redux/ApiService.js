@@ -71,6 +71,10 @@ class ApiService {
 
   }
 
+  patch = (path, data) => {
+    return this.api.patch(path, data);
+  }
+
 
   putFormData(path, formData) {
     return this.put(path, formData, true);

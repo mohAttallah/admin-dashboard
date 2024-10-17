@@ -5,34 +5,32 @@ import { styled, css } from '@mui/system';
 import { Modal as BaseModal } from '@mui/base/Modal';
 import { Button, Box, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMaterial } from '../../redux/universityslice';
+import { deleteGroup } from '../../redux/universityslice';
 import SnackbarMsg, { Severity, AnchorOrigin } from '../SnackbarMsg';
 import { useEffect, useState } from 'react';
 
-export default function DeleteCollageModal({ selectedMaterial, open, handleClose }) {
+export default function DeleteCollageModal({ selectedGroup, open, handleClose }) {
     const dispatch = useDispatch();
 
+    const {deleteGroupSuccessfully, deleteGroupError } = useSelector((state) => state.university);
 
-
-    const {deleteMaterialSuccessfully, deleteMaterialError } = useSelector((state) => state.university);
-
-    const [materialId, setMaterialId] = useState(null)
+    const [groupId, setGroupId] = useState(null)
 
     useEffect(() => {
-        setMaterialId(selectedMaterial?._id)
-
-    }, [selectedMaterial])
+        setGroupId(selectedGroup?._id)
+        console.log("groupId",  groupId)
+    }, [selectedGroup])
 
     const handleDelete = () => {
 
-        dispatch(deleteMaterial({ materialId }));
+        dispatch(deleteGroup({ groupId }));
         handleClose();
     };
 
     return (
         <div>
-            {deleteMaterialError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
-            {deleteMaterialSuccessfully && <SnackbarMsg text={"Delete Material Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
+            {deleteGroupError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
+            {deleteGroupSuccessfully && <SnackbarMsg text={"Delete Group Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
 
             <Modal
                 aria-labelledby="unstyled-modal-title"
@@ -45,7 +43,7 @@ export default function DeleteCollageModal({ selectedMaterial, open, handleClose
                 <ModalContent sx={{ width: 400 }}>
 
                     <Typography variant="h6" sx={{ mb: 2, color: '#fff' }}>
-                        Are you sure you want to delete the Material {selectedMaterial?.name}?
+                        Are you sure you want to delete the Group(force-delete) {selectedGroup?.name}?
                     </Typography>
 
                     <Box display="flex" justifyContent="space-between">

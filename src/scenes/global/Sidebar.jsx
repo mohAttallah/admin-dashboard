@@ -126,7 +126,7 @@ const SidebarComponent = () => {
                   Mohammad Attallah
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                 Admin
+                  Admin
                 </Typography>
               </Box>
             </Box>
@@ -184,6 +184,16 @@ const SidebarComponent = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
+
+            <Item
+              title="Request Group"
+              to="/request-group"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -221,14 +231,14 @@ const SidebarComponent = () => {
 
             <Item
               title="I Courrse - Classes"
-              to="/i-chapters"
+              to="/i-classes"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
 
-{/* 
+            {/* 
 
             <Item
               title="Calendar"

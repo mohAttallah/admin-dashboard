@@ -11,21 +11,29 @@ import Header from "../../components/Header";
 import { getUsers, getNextData, usersSearch } from '../../redux/userslice';
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import AssignWalletModal from  "../../components/users/AssignWallet";
-import AssignTeacherModal from  "../../components/users/AssignTeacher";
+import AssignWalletModal from "../../components/users/AssignWallet";
+import AssignTeacherModal from "../../components/users/AssignTeacher";
+import DeleteUserModal from "../../components/users/DeleteUser";
+import ReactivateModal from "../../components/users/ReactivateUser"
+import  RemoveTeacherModel  from "../../components/users/RemoveTeacher"
 
 const Users = () => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const dispatch = useDispatch();
-  const { loading, data, totalRecords, walletSuccessfully, assignTeacherSuccessfully } = useSelector((state) => state.users);
+  const { loading, data, totalRecords, walletSuccessfully, assignTeacherSuccessfully, deleteUserSuccessfully, reactivatedUserSuccessfully, removeTeacherSuccessfully } = useSelector((state) => state.users);
   const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0 });
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchValue, setSearchValue] = useState(null);
-  const [openAssignToWallet,  setOpenAssignToWallet] = useState(false); 
-  const [openAssignTeacher,  setOpenAssignTeacher] = useState(false); 
+  const [openAssignToWallet, setOpenAssignToWallet] = useState(false);
+  const [openAssignTeacher, setOpenAssignTeacher] = useState(false);
+  const [openDeleteUser, setOpenDeleteUser] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isTeacher, setIsTeacher] = useState(false);
+  const [openRemoveTeacher, setOpenRemoveTeacher] = useState(false);
+  const [reactiveateOpne, setReactiveateOpne] = useState(false);
 
 
   const handlePaginations = (model) => {
@@ -38,17 +46,18 @@ const Users = () => {
   const handleMenuClick = (event, user) => {
     setSelectedUser(null);
     setAnchorEl(event.currentTarget);
+    setIsDeleted(user.isDeleted);
+    setIsTeacher(user.isTeacher);
     setSelectedUser(user);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   const handleSearch = (event) => {
-    const keyword = event.target.value;
+    const keyword = event.target.value.trim();
+    setSearchValue(keyword);
     if (keyword) {
-      setSearchValue(keyword);
       dispatch(usersSearch(keyword));
       setPaginationModel({
         ...paginationModel,
@@ -56,7 +65,7 @@ const Users = () => {
       });
     }
   };
-  
+
   useEffect(() => {
     document.title = "Users | Admin Panel";
     dispatch(getUsers());
@@ -68,30 +77,59 @@ const Users = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if(walletSuccessfully===true || assignTeacherSuccessfully===true){
+    if (walletSuccessfully === true || assignTeacherSuccessfully === true || deleteUserSuccessfully === true || reactivatedUserSuccessfully === true || removeTeacherSuccessfully === true) {
       dispatch(getUsers());
       setPaginationModel({
         pageSize: data.length,
         page: 0,
       });
     }
-  }, [walletSuccessfully, assignTeacherSuccessfully]);
+  }, [walletSuccessfully, assignTeacherSuccessfully, deleteUserSuccessfully, reactivatedUserSuccessfully,  removeTeacherSuccessfully]);
 
   const handleAssignWalletOpen = () => {
-    setOpenAssignToWallet(true); 
-    handleMenuClose(); 
+    setOpenAssignToWallet(true);
+    handleMenuClose();
   };
   const handleAssignWalletClose = () => {
-    setOpenAssignToWallet(false); 
+    setOpenAssignToWallet(false);
   };
 
   const handleAssignTeacherOpen = () => {
-    setOpenAssignTeacher(true); 
-    handleMenuClose(); 
+    setOpenAssignTeacher(true);
+    handleMenuClose();
   }
   const handleAssignTeacherClose = () => {
     setOpenAssignTeacher(false);
   }
+
+  const handleDeleteUserOpen = () => {
+    setOpenDeleteUser(true);
+    handleMenuClose();
+  }
+  const handleDeleteUserClose = () => {
+    setOpenDeleteUser(false);
+  }
+
+  const handleReactiveateUserOpen = () => {
+    setReactiveateOpne(true);
+    handleMenuClose();
+  }
+
+  const handleReactiveateUserClose = () => {
+    setReactiveateOpne(false);
+  }
+
+  const handleRemoveTeacherOpen = () => {
+
+    setOpenRemoveTeacher(true);
+    handleMenuClose();
+
+  }
+  const closeRemoveTeacher = () => {
+
+    setOpenRemoveTeacher(false);
+  }
+
 
   const columns = [
     { field: "id", headerName: "ID" },
@@ -145,8 +183,8 @@ const Users = () => {
               isAdmin
                 ? colors.greenAccent[600]
                 : isTeacher
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
+                  ? colors.greenAccent[700]
+                  : colors.greenAccent[700]
             }
             borderRadius="4px"
           >
@@ -164,29 +202,49 @@ const Users = () => {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      renderCell: (params) => (
-        <>
-          <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-            <MenuItem onClick={handleAssignTeacherOpen}>Make it a Teacher</MenuItem>
-            <MenuItem onClick={handleAssignWalletOpen}>Assign wallet</MenuItem> 
-            <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
-          </Menu>
-        </>
-      ),
-    },
+      renderCell: (params) => {
+
+        return (
+          <>
+            <IconButton onClick={(event) => handleMenuClick(event, params.row)}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+              {isTeacher ? (
+                <MenuItem onClick={handleRemoveTeacherOpen}>Make it a User</MenuItem>
+
+              ) : (
+                <MenuItem onClick={handleAssignTeacherOpen}>Make it a Teacher</MenuItem>
+
+              )}
+              <MenuItem onClick={handleAssignWalletOpen}>Assign wallet</MenuItem>
+              {isDeleted ? (
+                <MenuItem onClick={handleReactiveateUserOpen}>re-activate user</MenuItem>
+              ) : (
+                <MenuItem onClick={handleDeleteUserOpen}>Delete</MenuItem>
+              )}
+            </Menu>
+          </>
+        );
+      },
+    }
   ];
 
   return (
     <Box m="15px">
       <Header title="Users" subtitle="Managing the Users Members" />
-      <AssignWalletModal selectedUser={selectedUser} open={openAssignToWallet} handleClose={handleAssignWalletClose} /> 
-      <AssignTeacherModal selectedUser={selectedUser} open={openAssignTeacher } handleClose={handleAssignTeacherClose} />
-      
+      <AssignWalletModal selectedUser={selectedUser} open={openAssignToWallet} handleClose={handleAssignWalletClose} />
+      <AssignTeacherModal selectedUser={selectedUser} open={openAssignTeacher} handleClose={handleAssignTeacherClose} />
+      <DeleteUserModal selectedUser={selectedUser} open={openDeleteUser} handleClose={handleDeleteUserClose} />
+      <ReactivateModal selectedUser={selectedUser} open={reactiveateOpne} handleClose={handleReactiveateUserClose} />
+      <RemoveTeacherModel selectedUser={selectedUser} open={openRemoveTeacher} handleClose={closeRemoveTeacher} />
       <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="3px" sx={{ width: '20%' }}>
-        <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Search" value={searchValue} onChange={handleSearch} />
+        <InputBase
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="Search"
+          value={searchValue}
+          onChange={handleSearch}
+        />
         <IconButton type="button">
           <SearchIcon />
         </IconButton>

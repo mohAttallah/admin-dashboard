@@ -47,14 +47,15 @@ const IcourseCourses = () => {
   const handleCategoryChange = (event) => {
     const selectedUniId = event.target.value;
     setSelectedCategory(selectedUniId);
-    dispatch(coursesList({selectedCategory}));
+    console.log("selectedCategory1212",  selectedCategory)
+    dispatch(coursesList({ selectedCategory }));
     console.log("coursesList", coursesList)
   };
 
   const categoriesOptions = (categories || []).map((category) => ({
     value: category?._id,
     label: category?.title,
-}));
+  }));
 
   // useEffect(() => {
   //   if (addNewUniversitySuccessfully === true || editUniversitySuccessfully===true || deleteUniversitySuccessfully===true) {
@@ -191,7 +192,6 @@ const IcourseCourses = () => {
 
       <Box display="flex" flexDirection="row" gap={2} sx={{ width: '100%' }}>
 
-
         <Button
           variant="contained"
           sx={{ backgroundColor: '#0093e6', color: '#fff' }}
@@ -201,15 +201,13 @@ const IcourseCourses = () => {
         </Button>
 
         <SelectComponent
-                    label="Select a Category"
-                    width="25%"
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                    options={categoriesOptions}
-                />
+          label="Select a Category"
+          width="25%"
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          options={categoriesOptions}
+        />
       </Box>
-
-
 
       <Box
         m="40px 0 0 0"

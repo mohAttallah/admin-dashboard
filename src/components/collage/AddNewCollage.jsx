@@ -44,6 +44,7 @@ export default function AddNewCollage({ universityOptions, open, handleClose }) 
             setUniversityId(null)
             setNameInArabic(null)
             setErrorMsg(null);
+            handleClose();
 
         }
 

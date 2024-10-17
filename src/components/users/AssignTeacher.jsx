@@ -32,7 +32,7 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
     }
 
     setErrorMsg(null)
-    dispatch(assignTeacher({ userId: selectedUniversity, "specialization": specializationhInput }));
+    dispatch(assignTeacher({ userId: selectedUser._id, "specialization": specializationhInput,  universityId: selectedUniversity }));
     handleClose();
   };
 
@@ -53,7 +53,7 @@ export default function AssignTeacher({ selectedUser, open, handleClose }) {
   return (
     <div>
 
-      {assignTeacherError && <SnackbarMsg text={"Failed"} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
+      {assignTeacherError && <SnackbarMsg text={`Failed to invite to zoom company use real Email please`} severity={Severity.ERROR} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
       {assignTeacherSuccessfully && <SnackbarMsg text={"Assigned to Wallet Successfully"} severity={Severity.SUCCESS} anchorOrigin={AnchorOrigin.BOTTOM_LEFT} />}
 
       <Modal
